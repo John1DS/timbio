@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimBio Script Production System | Authority OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --void: #0A0A0A;
+            --structure: #E6E6E6;
+            --signal: #A02EF0;
+            --signal-hover: #B84FFF;
+            --signal-dim: rgba(160, 46, 240, 0.1);
+            --border: rgba(230, 230, 230, 0.1);
+        }
+
+        body {
+            font-family: 'Lexend Deca', sans-serif;
+            background: var(--void);
+            color: var(--structure);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--signal);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            color: var(--structure);
+            font-family: 'Lexend Deca', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            opacity: 0.5;
+        }
+
+        .tab:hover {
+            opacity: 0.8;
+        }
+
+        .tab.active {
+            opacity: 1;
+            border-bottom-color: var(--signal);
+            color: var(--signal);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--signal);
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            background: rgba(230, 230, 230, 0.05);
+            border: 1px solid var(--border);
+            padding: 15px;
+            font-family: 'Lexend Deca', sans-serif;
+            font-size: 1rem;
+            color: var(--structure);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--signal);
+            background: rgba(160, 46, 240, 0.05);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            background: var(--signal);
+            color: var(--void);
+            border: none;
+            font-family: 'Lexend Deca', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: var(--signal-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(160, 46, 240, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--signal);
+            color: var(--signal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--signal-dim);
+            box-shadow: none;
+        }
+
+        .status-section {
+            margin: 40px 0;
+            padding: 20px;
+            background: var(--signal-dim);
+            border: 1px solid var(--signal);
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status-section.active {
+            display: block;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--signal);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: var(--signal);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .results-section {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            font-size: 1.2rem;
+            color: var(--signal);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .results-content {
+            background: rgba(230, 230, 230, 0.03);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .results-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .results-content::-webkit-scrollbar-track {
+            background: rgba(230, 230, 230, 0.05);
+        }
+
+        .results-content::-webkit-scrollbar-thumb {
+            background: var(--signal);
+            border-radius: 4px;
+        }
+
+        .info-box {
+            background: rgba(230, 230, 230, 0.03);
+            border-left: 3px solid var(--signal);
+            padding: 20px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .info-box strong {
+            color: var(--signal);
+        }
+
+        .api-config {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 10, 10, 0.98);
+            border: 1px solid var(--signal);
+            padding: 25px;
+            border-radius: 4px;
+            max-width: 400px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(160, 46, 240, 0.3);
+        }
+
+        .api-config.show {
+            display: block;
+        }
+
+        .api-config h3 {
+            margin-bottom: 20px;
+            color: var(--signal);
+            font-size: 1.1rem;
+        }
+
+        .config-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--signal);
+            color: var(--void);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Lexend Deca', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .config-toggle:hover {
+            background: var(--signal-hover);
+            transform: translateY(-2px);
+        }
+
+        .config-note {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .tab-container {
+                gap: 10px;
+            }
+
+            .tab {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .config-toggle, .api-config {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TimBio Script Production System</h1>
+            <p class="subtitle">Authority OS • Signal Intelligence</p>
+        </header>
+
+        <button class="config-toggle" onclick="toggleConfig()">⚙️ API Settings</button>
+
+        <div class="api-config" id="apiConfig">
+            <h3>API Configuration</h3>
+            <div class="form-group">
+                <label>Workforce/Agent ID</label>
+                <input type="text" id="workforceId" placeholder="Your workforce or agent ID">
+                <p class="config-note">Find this in your Relevance AI workforce settings</p>
+            </div>
+            <div class="form-group">
+                <label>API Key</label>
+                <input type="password" id="apiKey" placeholder="sk-...">
+                <p class="config-note">From the API credentials you generated</p>
+            </div>
+            <div class="form-group">
+                <label>Region</label>
+                <input type="text" id="region" placeholder="bcbe5a" value="bcbe5a">
+                <p class="config-note">Default: bcbe5a (from your credentials)</p>
+            </div>
+            <div class="form-group">
+                <label>Project ID</label>
+                <input type="text" id="project" placeholder="60fb9a4d-715f-4017-bb8e-8de5041f7972" value="60fb9a4d-715f-4017-bb8e-8de5041f7972">
+                <p class="config-note">Default: from your credentials</p>
+            </div>
+            <button class="btn" onclick="saveConfig()" style="width: 100%; margin-top: 15px;">Save Configuration</button>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab active" onclick="switchTab('newScript')">New Script</button>
+            <button class="tab" onclick="switchTab('refine')">Refine Script</button>
+        </div>
+
+        <div class="tab-content active" id="newScriptTab">
+            <div class="info-box">
+                <strong>NEW SCRIPT MODE</strong><br>
+                Generates a complete script from scratch based on your content brief. The system will research Tim's knowledge base and latest studies, then write the script in his authentic voice.
+            </div>
+
+            <form id="newScriptForm" class="form-grid">
+                <div class="form-group">
+                    <label>Content Brief</label>
+                    <textarea 
+                        id="contentBrief" 
+                        placeholder="Describe your topic, target audience, and key message. Be specific about angle, focus areas, and what makes this content valuable.&#10;&#10;Example: NMN supplementation for longevity. Target: health-conscious professionals 35-50. Focus: optimal dosing (1000mg vs 500mg), timing (morning vs evening), what makes it work vs not work. Include practical implementation. Avoid hype - stick to science."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Script Format</label>
+                    <select id="scriptFormat" required>
+                        <option value="">Select Format</option>
+                        <option value="Twitter Thread">Twitter Thread</option>
+                        <option value="Instagram Reel">Instagram Reel (Shock/Fear)</option>
+                        <option value="YouTube Script">YouTube Script</option>
+                        <option value="Blog Article">Blog Article</option>
+                        <option value="Email Newsletter">Email Newsletter</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Research Depth</label>
+                    <select id="researchDepth" required>
+                        <option value="">Select Depth</option>
+                        <option value="Quick Scan">Quick Scan (15 min) - Evergreen topics</option>
+                        <option value="Standard">Standard (30 min) - Balanced depth</option>
+                        <option value="Deep Dive">Deep Dive (60+ min) - Complex/cutting-edge</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Target Word Count (Optional)</label>
+                    <input type="number" id="wordCount" placeholder="300">
+                </div>
+
+                <button type="submit" class="btn">Generate Script</button>
+            </form>
+        </div>
+
+        <div class="tab-content" id="refineTab">
+            <div class="info-box">
+                <strong>REFINEMENT MODE</strong><br>
+                Improve an existing script with surgical precision. Agent 3 will make targeted edits based on your feedback while preserving everything that works. Be specific about what needs to change.
+            </div>
+
+            <form id="refineForm" class="form-grid">
+                <div class="form-group">
+                    <label>Script Draft</label>
+                    <textarea 
+                        id="scriptDraft" 
+                        placeholder="Paste your complete script here..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Feedback & Changes Needed</label>
+                    <textarea 
+                        id="feedback" 
+                        placeholder="Be specific about what needs to change:&#10;&#10;✓ 'Make the hook more shocking - use the unexpected 40% finding'&#10;✓ 'Add specific mg dosing in section 3 (1000mg sublingual, morning)'&#10;✓ 'Reduce length by 15% - cut tweets 8-9, consolidate 3-4'&#10;✓ 'Change tone to be less academic, more conversational'&#10;&#10;✗ 'Better hook'&#10;✗ 'Add more details'&#10;✗ 'Make it shorter'"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Version Number (Optional)</label>
+                    <input type="text" id="versionNumber" placeholder="2">
+                </div>
+
+                <button type="submit" class="btn">Refine Script</button>
+            </form>
+        </div>
+
+        <div class="status-section" id="statusSection">
+            <div class="status-header">
+                <div class="status-indicator"></div>
+                <span class="status-text" id="statusText">Processing...</span>
+            </div>
+            <div id="statusDetails" style="margin-top: 10px; font-size: 0.85rem; opacity: 0.8;"></div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>Results</h2>
+                <button class="btn btn-secondary" onclick="copyResults()">Copy to Clipboard</button>
+            </div>
+            <div class="results-content" id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration with pre-filled values from your credentials
+        let config = {
+            workforceId: localStorage.getItem('workforceId') || '',
+            apiKey: localStorage.getItem('apiKey') || '',
+            region: localStorage.getItem('region') || 'bcbe5a',
+            project: localStorage.getItem('project') || '60fb9a4d-715f-4017-bb8e-8de5041f7972'
+        };
+
+        // Initialize form fields
+        if (config.workforceId) document.getElementById('workforceId').value = config.workforceId;
+        if (config.apiKey) document.getElementById('apiKey').value = config.apiKey;
+        if (config.region) document.getElementById('region').value = config.region;
+        if (config.project) document.getElementById('project').value = config.project;
+
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            document.getElementById('resultsSection').classList.remove('active');
+        }
+
+        function toggleConfig() {
+            const configPanel = document.getElementById('apiConfig');
+            configPanel.classList.toggle('show');
+        }
+
+        function saveConfig() {
+            config.workforceId = document.getElementById('workforceId').value;
+            config.apiKey = document.getElementById('apiKey').value;
+            config.region = document.getElementById('region').value;
+            config.project = document.getElementById('project').value;
+            
+            localStorage.setItem('workforceId', config.workforceId);
+            localStorage.setItem('apiKey', config.apiKey);
+            localStorage.setItem('region', config.region);
+            localStorage.setItem('project', config.project);
+            
+            alert('✓ Configuration saved successfully!');
+            toggleConfig();
+        }
+
+        document.getElementById('newScriptForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!config.apiKey || !config.workforceId) {
+                alert('⚠️ Please configure your API settings first (click ⚙️ API Settings)\n\nYou need to enter:\n• Your Workforce/Agent ID\n• Your API Key (sk-...)');
+                toggleConfig();
+                return;
+            }
+
+            const formData = {
+                mode: 'NEW_SCRIPT',
+                content_brief: document.getElementById('contentBrief').value,
+                script_format: document.getElementById('scriptFormat').value,
+                research_depth: document.getElementById('researchDepth').value,
+                target_word_count: document.getElementById('wordCount').value || '300'
+            };
+
+            await executeWorkforce(formData, 'new script');
+        });
+
+        document.getElementById('refineForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!config.apiKey || !config.workforceId) {
+                alert('⚠️ Please configure your API settings first (click ⚙️ API Settings)');
+                toggleConfig();
+                return;
+            }
+
+            const formData = {
+                mode: 'REFINEMENT',
+                script_draft: document.getElementById('scriptDraft').value,
+                feedback: document.getElementById('feedback').value,
+                version_number: document.getElementById('versionNumber').value || '2'
+            };
+
+            await executeWorkforce(formData, 'refinement');
+        });
+
+        async function executeWorkforce(data, type) {
+            const statusSection = document.getElementById('statusSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const statusText = document.getElementById('statusText');
+            const statusDetails = document.getElementById('statusDetails');
+            const resultsContent = document.getElementById('resultsContent');
+
+            statusSection.classList.add('active');
+            resultsSection.classList.remove('active');
+            
+            if (type === 'new script') {
+                statusText.textContent = 'Agent 1: Researching...';
+                statusDetails.textContent = 'Scanning knowledge base and latest research...';
+            } else {
+                statusText.textContent = 'Agent 3: Refining...';
+                statusDetails.textContent = 'Analyzing feedback and making surgical edits...';
+            }
+
+            try {
+                const endpoint = `https://api-${config.region}.stack.relevanceai.com/latest/studios/${config.project}/trigger_limited`;
+                
+                console.log('Calling endpoint:', endpoint);
+                console.log('With agent ID:', config.workforceId);
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${config.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        message: {
+                            role: 'user',
+                            content: formatMessage(data)
+                        },
+                        agent_id: config.workforceId
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error Response:', errorText);
+                    throw new Error(`API Error (${response.status}): ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('API Response:', result);
+                
+                if (type === 'new script') {
+                    statusText.textContent = 'Agent 2: Writing Script...';
+                    statusDetails.textContent = 'Transforming research into Tim\'s voice...';
+                    
+                    setTimeout(() => {
+                        statusSection.classList.remove('active');
+                        resultsSection.classList.add('active');
+                        resultsContent.textContent = result.output || result.answer || result.message || JSON.stringify(result, null, 2);
+                    }, 2000);
+                } else {
+                    statusSection.classList.remove('active');
+                    resultsSection.classList.add('active');
+                    resultsContent.textContent = result.output || result.answer || result.message || JSON.stringify(result, null, 2);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                statusText.textContent = '❌ Error Occurred';
+                statusDetails.innerHTML = `<strong>${error.message}</strong><br><br>Please check:<br>• Your Workforce/Agent ID is correct<br>• Your API Key is valid<br>• Your region and project ID match your credentials<br><br>Open browser console (F12) for detailed logs.`;
+            }
+        }
+
+        function formatMessage(data) {
+            if (data.mode === 'NEW_SCRIPT') {
+                return `CONTENT BRIEF:\n${data.content_brief}\n\nSCRIPT FORMAT:\n${data.script_format}\n\nRESEARCH DEPTH:\n${data.research_depth}\n\nTARGET WORD COUNT:\n${data.target_word_count}`;
+            } else {
+                return `SCRIPT DRAFT:\n${data.script_draft}\n\nFEEDBACK:\n${data.feedback}\n\nVERSION:\n${data.version_number}`;
+            }
+        }
+
+        function copyResults() {
+            const resultsContent = document.getElementById('resultsContent');
+            navigator.clipboard.writeText(resultsContent.textContent).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
